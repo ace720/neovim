@@ -1,4 +1,4 @@
 # 💤 LazyVim template
-Plugins & Configurations
+Plugins, themes & Configurations
 
 Here are my custom tweaks for my nvim editor.
