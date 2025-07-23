@@ -17,7 +17,7 @@ require("lspconfig").basedpyright.setup({
       reportPrivateImportUsage = false, -- Disable warnings about private imports
       autoSearchPaths = true,
 
-      venvPath = ".",
+      venvPath = "./",
       venv = "env",
     },
   },
