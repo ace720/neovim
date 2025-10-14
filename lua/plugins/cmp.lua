@@ -121,7 +121,7 @@ return {
 
   -- Ensure basedpyright and other recommended tools are installed
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {
       ensure_installed = {
         "basedpyright",
