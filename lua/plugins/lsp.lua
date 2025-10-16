@@ -53,69 +53,42 @@ return {
             },
           },
         },
-        -- angularls = {
-        --   cmd = { "node", "/usr/lib/node_modules/@angular/language-server/index.js", "--stdio" },
-        --   on_new_config = function(new_config, _)
-        --     new_config.cmd = {
-        --       "node",
-        --       "/path/to/global/node_modules/@angular/language-server/index.js",
-        --       "--stdio",
-        --       "--tsProbeLocations",
-        --       "",
-        --       "--ngProbeLocations",
-        --       "",
-        --     }
-        --   end,
-        --   filetypes = { "typescript", "html", "typescriptreact", "typescript.tsx" },
-        --   root_dir = require("lspconfig.util").root_pattern("angular.json", "project.json"),
-        -- },
-      },
-    },
-
-    require("lspconfig").basedpyright.setup({
-      settings = {
         basedpyright = {
-          typeCheckingMode = "off",
-          useLibraryCodeForTypes = true,
-          diagnosticMode = "workspace", -- "openFilesOnly" or "workspace"
-          reportMissingImports = true, -- Set to false to disable missing import warnings
-          reportMissingTypeStubs = false, -- Disable missing type stub warnings
-          reportOptionalMemberAccess = false, -- Disable optional member access warnings
-          reportOptionalSubscript = false, -- Disable optional subscript warnings
-          reportOptionalCall = false, -- Disable optional call warnings
-          reportPrivateImportUsage = false, -- Disable warnings about private imports
-          autoSearchPaths = true,
-
-          venvPath = "./",
-          venv = "env",
-        },
-      },
-    }),
-
-    require("lspconfig").pylsp.setup({
-      settings = {
-        pylsp = {
-          plugins = {
-            jedi_completion = { enabled = true },
-            jedi_hover = { enabled = false },
-            jedi_signature_help = { enabled = false },
-            pyflakes = { enabled = true },
-            pycodestyle = { enabled = false },
-            mccabe = { enabled = true },
-            pylint = { enabled = false },
-            flake8 = { enabled = true },
-            autopep8 = { enabled = false },
-            yapf = { enabled = false },
-            black = { enabled = false },
-            -- autopape8 = { enabled = false },
-            -- rope_autoimport = { enabled = false }, -- if installed
-            -- You can add more plugins here if you use others
+          settings = {
+            basedpyright = {
+              typeCheckingMode = "off", -- Faster than "strict", sufficient for Django.
+              useLibraryCodeForTypes = true,
+              diagnosticMode = "openFilesOnly", -- Only check open files for speed.
+              reportMissingImports = true,
+              reportMissingTypeStubs = false, -- Avoid stub warnings (django-stubs handles this).
+              reportOptionalMemberAccess = false, -- Django-friendly.
+              reportOptionalSubscript = false,
+              reportOptionalCall = false,
+              reportPrivateImportUsage = false,
+              autoSearchPaths = true,
+              venvPath = "./", -- Path to virtualenv directory.
+              venv = "env", -- Virtualenv name.
+            },
           },
         },
+        pylsp = { enabled = false }, -- Ensure pylsp is disabled.
+        jedi_language_server = { enabled = false }, -- Ensure jedi is disabled.
       },
-      on_attach = function(client, bufnr)
-        client.server_capabilities.documentFormattingprovider = false
-      end,
-    }),
+    },
+  },
+  {
+    "mfussenegger/nvim-lint",
+    opts = {
+      linters_by_ft = {
+        python = { "ruff" }, -- Use Ruff for fast linting.
+      },
+      linters = {
+        ruff = {
+          cmd = "ruff", -- Uses venv’s Ruff.
+          args = { "--fix", "--exit-zero", "--extend-select=D", "--ignore=D100,D104" }, -- Django rules, ignore some docstrings.
+        },
+      },
+      events = { "BufWritePost", "InsertLeave" }, -- Lint on save or after typing.
+    },
   },
 }
